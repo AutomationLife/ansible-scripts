@@ -1,0 +1,37 @@
+---
+- name: This is my first playbook
+  hosts: "{{ group_name }}"
+  become: yes
+  become_user: root
+  remote_user: ubuntu
+
+  # SVariables is used to use same values in multiple places
+  vars:
+    group_name: all
+  tasks:
+    - name: Installation Demo, with one package
+      apt:
+        name: default-jre
+        state: present
+        update_cache: true
+    
+    - name: Installation Demo, with multiple packages
+      when: ansible_distribution_version != "20.04"
+      apt:
+        name:
+          - git
+          - maven
+          - apache2
+        state: present
+        update_cache: true
+      # delegate_to: "{{ item }}"
+      # with_items:
+      #   - "{{ list }}"
+      # Write this isn hosts file list='["ip","ip"]'
+    
+    - name: Demo to print some message
+      debug:
+        msg: 
+          - "[INFO] This is some information."
+          - "some more info."
+          - "{{ ansible_distribution_version }}"
