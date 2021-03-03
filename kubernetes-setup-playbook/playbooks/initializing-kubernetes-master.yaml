@@ -1,6 +1,6 @@
 - name: Install Kubernetes
-  hosts: name
-  remote_user: ubuntu
+  hosts: master
+  # remote_user: ubuntu
 
   tasks:
   # # Disable Swap for kubelet
