@@ -1,12 +1,12 @@
 ---
-# - name: Installing Docker
-#   import_playbook: playbooks/installDocker.yaml
+- name: Installing Docker
+  import_playbook: playbooks/installDocker.yaml
 
-# - name: Installing Kubernetes Components
-#   import_playbook: playbooks/installKubernetesComponents.yaml
+- name: Installing Kubernetes Components
+  import_playbook: playbooks/installKubernetesComponents.yaml
   
-# - name: Initialize the Kubernetes Controle plane on master
-#   import_playbook: playbooks/initializing-kubernetes-master.yaml
+- name: Initialize the Kubernetes Controle plane on master
+  import_playbook: playbooks/initializing-kubernetes-master.yaml
 
 - name: Master and Worker nodes join
   import_playbook: playbooks/master-worker-join.yaml
