@@ -16,9 +16,11 @@
       flat: yes
   
   - name: copy join Command Script to Node Machine
+    when: inventory_hostname in groups['nodes']
     copy:
       src: join-command-script
       dest: /tmp/join-command.sh
+      mode: 755
   
   - name: Run Join Command Script
     when: inventory_hostname in groups['nodes']
@@ -34,7 +36,7 @@
     when: inventory_hostname in groups['master']
     shell: kubectl get nodes
     register: output  
-    
+
   - name: Print Join Status output
     when: inventory_hostname in groups['master']
     debug: var=output.stdout_lines
