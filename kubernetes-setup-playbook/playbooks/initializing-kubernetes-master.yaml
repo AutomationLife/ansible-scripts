@@ -1,0 +1,58 @@
+- name: Install Kubernetes
+  hosts: name
+  remote_user: ubuntu
+
+  tasks:
+  # # Disable Swap for kubelet
+  # - name: Remove swapfile from /etc/fstab
+  #   mount:
+  #     name: "{{ item }}"
+  #     fstype: swap
+  #     state: absent
+  #   with_items:
+  #     - swap
+  #     - none
+
+  # - name: Disable swap
+  #   command: swapoff -a
+  #   when: ansible_swaptotal_mb > 0
+
+  - name: Initialize Master
+    become: yes
+    command: kubeadm init --apiserver-advertise-address={{ ansible_eth0.ipv4.address }}  --node-name k8s-master --pod-network-cidr=192.168.0.0/16
+    register: output
+    ignore_errors: yes
+  
+  - name: Priniting initialization logs
+    debug: var=output.stdout_lines
+
+  - name: Setting up .kube folder
+    file:
+      path: "~/.kube"
+      state: directory
+  
+  - name: Setting up kubeconfig
+    become: yes
+    copy:
+      src: /etc/kubernetes/admin.conf
+      dest: "/home/ubuntu/.kube/config"
+      owner: ubuntu
+      group: ubuntu
+      remote_src: yes
+
+  - name: checking Setup
+    shell: kubectl get nodes
+    register: output
+
+  - name: Priniting GET NODES Output
+    debug: var=output.stdout_lines
+  
+  # Setup the container networking provider and the network policy engine
+  - name: Install calico pod network
+    command: kubectl create -f https://docs.projectcalico.org/v3.4/getting-started/kubernetes/installation/hosted/calico.yaml && sleep 20 && kubectl get nodes
+    register: output
+
+  - name: Priniting logs after pod network
+    debug: var=output.stdout_lines
+
+
