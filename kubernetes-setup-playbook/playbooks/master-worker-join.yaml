@@ -2,26 +2,26 @@
   hosts: all
 
   tasks:
-  - name: create join command
+  - name: create Join command
     become: yes
     shell: kubeadm token create --print-join-command | grep -i kubeadm > /tmp/join-command.sh
     when: inventory_hostname in groups['master']
 
-  - name: Fetching join command script to master
+  - name: Fetching Join Command Script to Ansible Master
     when: inventory_hostname in groups['master']
     fetch:
-      src: tmp/join-command.sh
+      src: /tmp/join-command.sh
       dest: join-command.sh
       mode: 755
       flat: yes
-  
-  - name: copy join Command Script to Node Machine
+
+  - name: Copy Join Command Script to Node Machine
     when: inventory_hostname in groups['nodes']
-    copy:
-      src: join-command-script
+    copy: 
+      src: join-command.sh
       dest: /tmp/join-command.sh
       mode: 755
-  
+
   - name: Run Join Command Script
     when: inventory_hostname in groups['nodes']
     become: yes
