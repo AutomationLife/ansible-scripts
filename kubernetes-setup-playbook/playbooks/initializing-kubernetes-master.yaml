@@ -41,7 +41,7 @@
       remote_src: yes
 
   - name: checking Setup
-    shell: kubectl get nodes
+    command: kubectl get nodes
     register: output
 
   - name: Priniting GET NODES Output
