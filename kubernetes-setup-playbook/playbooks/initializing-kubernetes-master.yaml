@@ -49,8 +49,11 @@
   
   # Setup the container networking provider and the network policy engine
   - name: Install calico pod network
-    shell: kubectl create -f https://docs.projectcalico.org/v3.4/getting-started/kubernetes/installation/hosted/calico.yaml && sleep 20 && kubectl get nodes
+    command: kubectl apply -f https://docs.projectcalico.org/v3.4/getting-started/kubernetes/installation/hosted/calico.yaml
     register: output
+
+  - name: sleeping time
+    command: sleep 20
 
   - name: Priniting logs after pod network
     debug: var=output.stdout_lines
